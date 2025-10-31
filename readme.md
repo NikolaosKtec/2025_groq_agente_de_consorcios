@@ -61,7 +61,7 @@ cd npm install
 
 3. **Instale as dependências do front-end**
 ```bash
-cd cd front/react_app_chat 
+cd front/react_app_chat 
 cd npm install
 ```
 4. **Configure as variaveis de amiente (windows)**
