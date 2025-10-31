@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "front/react_app_chat/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "react_app_chat/build"
+      }
+    },
+    {
+      "src": "server/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "front/react_app_chat/$1"
+    }
+  ],
+   "buildCommand": "cd front/react_app_chat && npm run build"
+ 
+  
+}
