@@ -30,7 +30,6 @@ app.use(express.json());
 
 })
 
-const port = process.env.PORT || 3000
-app.listen(port, () => {
-       console.log(`Serve at http://localhost:${port}`)
-})
+// const port = process.env.PORT || 3000
+
+export default index;
