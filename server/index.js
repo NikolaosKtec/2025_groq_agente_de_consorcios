@@ -32,4 +32,4 @@ app.use(express.json());
 
 // const port = process.env.PORT || 3000
 
-export default index;
+export default app;
