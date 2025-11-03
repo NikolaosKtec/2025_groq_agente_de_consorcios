@@ -18,7 +18,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "front/react_app_chat/$1"
+      "dest": "front/react_app_chat/build/index.html"
     }
   ]
 }
