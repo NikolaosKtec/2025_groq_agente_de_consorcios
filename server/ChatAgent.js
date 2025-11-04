@@ -134,7 +134,7 @@ CHAME FUNÇÕES SOMENTE:
               // funções disponíveis para o modelo
 
               function save(params) {
-                     pipefyConnector(params)
+                     this.pipefyConnector(params)
               }
               function scheduleMeet(params) {
                      // log("📅 Agendando reunião...");
