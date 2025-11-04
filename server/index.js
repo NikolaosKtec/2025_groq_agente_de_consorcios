@@ -31,3 +31,4 @@ const port = process.env.PORT || 3000
 app.listen(port, () => {
        console.log(`Serve sarted on: ${port}`)
 })
+export default app;
