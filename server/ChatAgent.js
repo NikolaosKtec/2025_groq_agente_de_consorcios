@@ -2,7 +2,7 @@ import Groq from "groq-sdk";
 import Pipefy_provider from "./Pipefy_provider.js";
 const API_KEY = process.env.GROQ_API_KEY;
 
-const groq = new Groq({apiKey:API_KEY});
+const groq = new Groq({ apiKey: API_KEY });
 //pipefy 
 
 
@@ -74,15 +74,16 @@ CHAME FUNÇÕES SOMENTE:
               }
               ];
               this.provider = new Pipefy_provider();
+              this.availableFunctions = {
+                     save: this.save,
+                     scheduleMeet: this.scheduleMeet,
+              };
 
        }
        // funcao principal trata mensagens do usuario
        async processUserInput(userInput) {
               this.messages.push({ role: "user", content: userInput });
-              const availableFunctions = {
-                     save,
-                     scheduleMeet,
-              };
+
               try {
                      // Primeira chamada ao modelo
                      const response = await groq.chat.completions.create({
@@ -101,7 +102,7 @@ CHAME FUNÇÕES SOMENTE:
                      // Verifica se o modelo quer chamar uma função
                      for (const toolCall of toolCalls) {
                             const functionName = toolCall.function.name;
-                            const functionToCall = availableFunctions[functionName];
+                            const functionToCall = this.availableFunctions[functionName];
                             const functionArgs = JSON.parse(toolCall.function.arguments);
 
                             const functionResponse = await functionToCall?.(functionArgs);
@@ -129,24 +130,23 @@ CHAME FUNÇÕES SOMENTE:
                      return responseMessage.content;
               } catch (error) {
                      // log("An error occurred:", error);
-                     throw error; 
+                     throw error;
               }
-              // funções disponíveis para o modelo
 
-              function save(params) {
-                     this.pipefyConnector(params)
-              }
-              function scheduleMeet(params) {
-                     // log("📅 Agendando reunião...");
-                     // Simulando agendamento
+       }
+       // funções disponíveis para o modelo
+       save(params) {
+              this.pipefyConnector(params)
+       }
+       scheduleMeet(params) {
+              // log("📅 Agendando reunião...");
+              // Simulando agendamento
 
-                     // log("✅ Reunião agendada:", params);
-                     return "reunião agendada com sucesso";
-              }
+              // log("✅ Reunião agendada:", params);
+              return "reunião agendada com sucesso";
        }
        // conecta com a api do  Pipefy
-       pipefyConnector(params){
+       pipefyConnector(params) {
               this.provider.updateCard(params)
        }
-       
 } export default ChatAgent;
