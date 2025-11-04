@@ -1,5 +1,5 @@
 import Groq from "groq-sdk";
-import Pipefy_provider from "./pipefy_provider";
+import Pipefy_provider from "./Pipefy_provider.js";
 const API_KEY = process.env.GROQ_API_KEY;
 
 const groq = new Groq({apiKey:API_KEY});
