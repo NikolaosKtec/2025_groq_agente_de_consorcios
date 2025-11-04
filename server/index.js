@@ -1,9 +1,16 @@
 import express from "express"
 import ChatAgent from "./ChatAgent.js"
+import cors from 'cors'
 const chat = new ChatAgent();
 const app = express();
 
 app.use(express.json());
+
+app.use(cors({
+  origin: "https://2025groqagentedeconsorciosclient.vercel.app", 
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.get("/", (req, res) => {
        res.json({message:"server ok"})
