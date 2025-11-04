@@ -75,8 +75,8 @@ CHAME FUNÇÕES SOMENTE:
               ];
               this.provider = new Pipefy_provider();
               this.availableFunctions = {
-                     save: this.save,
-                     scheduleMeet: this.scheduleMeet,
+                     save: this.save.bind(this),
+                     scheduleMeet: this.scheduleMeet.bind(this),
               };
 
        }
