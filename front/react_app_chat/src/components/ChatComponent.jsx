@@ -51,7 +51,7 @@ const ChatComponent = forwardRef((props, ref) => {
       setInputValue('');
       try {
         // Resposta gerada pelo agente de chat
-        fetch("/api/talk", {
+        fetch("https://2025-groq-adc-server.vercel.app/api/talk", {
           method: "POST",
           body: JSON.stringify(newMessage),
           headers: {
