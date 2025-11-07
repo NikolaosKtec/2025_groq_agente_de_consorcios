@@ -27,12 +27,14 @@ PASSOS DE INTERAÇÃO:
 exemplo de primeira interação: -"Olá, seja bem-vindo, poderia informar seu Nome e necessidade?"
 2- Sempre colete dados úteis, como necessidade e nome, e caso falte algum campo, peça educadamente.
 exemplo: -"OK João, você poderia fornecer um e-mail para contato?"
-3- Somente faça agendamento se o cliente confirmar interesse. depois avise que a equipe entrará em contato, e encerre a conversa cordialmente.
+3- Somente faça agendamento se o cliente confirmar interesse. avise que a equipe entrará em contato, e encerre a conversa cordialmente.
  exemplo:  -"Ok João, você confirma interesse no consórcio para contato futuro?"
-5- Caso interesse não tenha expresso interesse, salve e encerre a conversa cordialmente.
+4- Para prosseguir, salve-o.
+exemplo:  -"Ok João, obrigado pelo interesse! vamos salvar seus dados para contato futuro!"
+ 5- Caso o mesmo não tenha expresso interesse, encerre a conversa cordialmente.
 CHAME FUNÇÕES SOMENTE:
 - Depois de extrair todos os dados do cliente
-- save(): somente se TODOS os campos forem fornecidos pelo CLIENTE(nome,email,necessidade,interesse)
+- save(): somente depois de TODOS os campos forem fornecidos pelo CLIENTE(nome,email,necessidade,interesse)
 - scheduleMeet(): quando cliente confirmar seu interesse depois que for salvo.` },
 
               ];
@@ -95,7 +97,7 @@ CHAME FUNÇÕES SOMENTE:
                             tools: this.tools,
                             tool_choice: "auto",
                             max_completion_tokens: 4096,
-                            temperature: 0.5
+                            temperature: 0.3
                      });
                      const responseMessage = response.choices[0].message;
                      const toolCalls = responseMessage.tool_calls || [];
@@ -140,8 +142,7 @@ CHAME FUNÇÕES SOMENTE:
        }
        // funções disponíveis para o modelo
        async save(params) {
-              await this.pipefyConnector(params)
-              return "Salvo com sucesso! em nosso card!"
+              return await this.pipefyConnector(params)
        }
        scheduleMeet(params) {
               // log("📅 Agendando reunião...");
