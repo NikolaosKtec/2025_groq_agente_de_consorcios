@@ -26,7 +26,7 @@ PASSOS DE INTERAÇÃO:
 1- Após passar as informações sobre os planos, colete dados do cliente, a estrutura deve ser: ${this.customerData}. 
 2- Se houver algum campo vazio "" solicite educadamente de forma natural.
 3- Somente faça agendamento se o cliente confirmar interesse. depois avise que a equipe entrará em contato, e encerre a conversa cordialmente.
-4- O campo: ${this.customerData.interesse} será "true" ou "false".
+4- O campo interesse será "true" ou "false".
 5- Caso interesse seja "false", salve e encerre a conversa cordialmente.
 CHAME FUNÇÕES SOMENTE:
 - Depois de extrair todos os dados do cliente
