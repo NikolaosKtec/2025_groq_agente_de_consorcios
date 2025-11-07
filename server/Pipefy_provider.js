@@ -9,7 +9,18 @@ class Pipefy_provider {
               this.INTERESSE_FIELD = "interesse";
        }
        // cria ou atualiza um card
-       updateCard(params) {
+       /**
+        * Creates a new card in Pipefy with the specified parameters
+        * @async
+        * @param {Object} params - The parameters for creating the card
+        * @param {string} params.nome - The name to be added to the card
+        * @param {string} params.email - The email to be added to the card
+        * @param {string} params.necessidade - The need/requirement to be added to the card
+        * @param {string} params.interesse - The interest to be added to the card
+        * @returns {Promise<void>} - A promise that resolves when the card is created
+        * @throws {Error} - If the API request fails
+        */
+       async updateCard(params) {
               const mutation =`
                      mutation {
                             createCard(input: {

@@ -24,7 +24,8 @@ com parcelas amortizadas ao longo de 48 meses.
 4-Perguntas detalhadas, são respondidas pela equipe especializada, que entrará em contato após o agendamento.
 PASSOS DE INTERAÇÃO:
 1- Após passar as informações fornecidas acima, colete dados do cliente, a estrutura deve ser: ${this.customerData}. 
-2- Se houver algum campo vaziosolicite educadamente de forma natural.
+exemplo de primeira interação: -"Olá, seja bem-vindo, poderia informar seu Nome e necessidade?"
+2- Sempre colete dados úteis, como necessidade e nome, e caso falte algum campo, peça educadamente.
 exemplo: -"OK João, você poderia fornecer um e-mail para contato?"
 3- Somente faça agendamento se o cliente confirmar interesse. depois avise que a equipe entrará em contato, e encerre a conversa cordialmente.
  exemplo:  -"Ok João, você confirma interesse no consórcio para contato futuro?"
@@ -116,6 +117,7 @@ CHAME FUNÇÕES SOMENTE:
                                           tool_call_id: toolCall.id,
                                    });
                             }
+
                             // Faça a solicitação final com os resultados da chamada da ferramenta.
                             const secondResponse = await groq.chat.completions.create({
                                    model: this.model,
@@ -137,8 +139,9 @@ CHAME FUNÇÕES SOMENTE:
 
        }
        // funções disponíveis para o modelo
-       save(params) {
-              this.pipefyConnector(params)
+       async save(params) {
+              await this.pipefyConnector(params)
+              return "Salvo com sucesso! em nosso card!"
        }
        scheduleMeet(params) {
               // log("📅 Agendando reunião...");
@@ -148,7 +151,14 @@ CHAME FUNÇÕES SOMENTE:
               return "reunião agendada com sucesso";
        }
        // conecta com a api do  Pipefy
-       pipefyConnector(params) {
-              this.provider.updateCard(params)
+       /**
+        * Connects to Pipefy API and updates a card with the given parameters
+        * @async
+        * @param {Object} params - Parameters required for updating the card in Pipefy
+        * @returns {Promise<void>}
+        * @throws {Error} If there's an error updating the card
+        */
+       async pipefyConnector(params) {
+              await this.provider.updateCard(params)
        }
 } export default ChatAgent;
