@@ -126,12 +126,13 @@ CHAME FUNÇÕES SOMENTE:
                                    messages: this.messages,
                                    tools: this.tools,
                                    tool_choice: "auto",
-                                   temperature: 0.5,
+                                   temperature: 0.3,
                                    max_completion_tokens: 4096
                             });
-
-                            return secondResponse.choices[0].message.content;
-
+                            let text = secondResponse.choices[0].message.content
+                            // Remove as tags de function e o conteúdo entre elas
+                            text = text.replace(/<function=.*?>.*?<\/function>/gs, '');
+                            return text.trim();
                      }
                      return responseMessage.content;
               } catch (error) {
