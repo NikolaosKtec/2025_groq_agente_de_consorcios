@@ -11,13 +11,11 @@ app.use(cors({
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
 app.get("/", (req, res) => {
        res.json({message:"server ok"})
 })
 
 app.post("/api/talk", async (req, res) => {
-
 
        try {
               const { text, sender } = req.body;
@@ -25,10 +23,7 @@ app.post("/api/talk", async (req, res) => {
               res.json({
                      text: responce,
                      sender: "agent"
-
               });
-
-
        } catch (e) {
               throw e;
        }
