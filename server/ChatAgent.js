@@ -1,8 +1,8 @@
 import Groq from "groq-sdk";
-import Pipefy_provider from "./pipefy_provider";
+import Pipefy_provider from "./Pipefy_provider.js";
 const API_KEY = process.env.GROQ_API_KEY;
 
-const groq = new Groq({apiKey:API_KEY});
+const groq = new Groq({ apiKey: API_KEY });
 //pipefy 
 
 
@@ -23,13 +23,18 @@ para formar um fundo comum, que é utilizado para contemplar os participantes po
 com parcelas amortizadas ao longo de 48 meses.
 4-Perguntas detalhadas, são respondidas pela equipe especializada, que entrará em contato após o agendamento.
 PASSOS DE INTERAÇÃO:
-1- Após passar as informações sobre os planos, colete dados do cliente, a estrutura deve ser: ${this.customerData}. 
-2- Se houver algum campo vazio "" solicite educadamente de forma natural.
-3- Somente faça agendamento se o cliente confirmar interesse. depois avise que a equipe entrará em contato, e encerre a conversa cordialmente.
-4- Caso nao tenha interesse, salve e encerre a conversa cordialmente.
+1- Após passar as informações fornecidas acima, colete dados do cliente, a estrutura deve ser: ${this.customerData}. 
+exemplo de primeira interação: -"Olá, seja bem-vindo, poderia informar seu Nome e necessidade?"
+2- Sempre colete dados úteis, como necessidade e nome, e caso falte algum campo, peça educadamente.
+exemplo: -"OK João, você poderia fornecer um e-mail para contato?"
+3- Somente faça agendamento se o cliente confirmar interesse. avise que a equipe entrará em contato, e encerre a conversa cordialmente.
+ exemplo:  -"Ok João, você confirma interesse no consórcio para contato futuro?"
+4- Para prosseguir, salve-o.
+exemplo:  -"Ok João, obrigado pelo interesse! vamos salvar seus dados para contato futuro!"
+5- Caso o mesmo não tenha expresso interesse, encerre a conversa cordialmente.
 CHAME FUNÇÕES SOMENTE:
 - Depois de extrair todos os dados do cliente
-- save(): somente se TODOS os campos forem fornecidos pelo CLIENTE(nome,email,necessidade,interesse)
+- save(): somente depois de TODOS os campos forem fornecidos pelo CLIENTE(nome,email,necessidade,interesse)
 - scheduleMeet(): quando cliente confirmar seu interesse depois que for salvo.` },
 
               ];
@@ -74,15 +79,16 @@ CHAME FUNÇÕES SOMENTE:
               }
               ];
               this.provider = new Pipefy_provider();
+              this.availableFunctions = {
+                     save: this.save.bind(this),
+                     scheduleMeet: this.scheduleMeet.bind(this),
+              };
 
        }
        // funcao principal trata mensagens do usuario
        async processUserInput(userInput) {
               this.messages.push({ role: "user", content: userInput });
-              const availableFunctions = {
-                     save,
-                     scheduleMeet,
-              };
+
               try {
                      // Primeira chamada ao modelo
                      const response = await groq.chat.completions.create({
@@ -91,7 +97,7 @@ CHAME FUNÇÕES SOMENTE:
                             tools: this.tools,
                             tool_choice: "auto",
                             max_completion_tokens: 4096,
-                            temperature: 0.5
+                            temperature: 0.3
                      });
                      const responseMessage = response.choices[0].message;
                      const toolCalls = responseMessage.tool_calls || [];
@@ -101,7 +107,7 @@ CHAME FUNÇÕES SOMENTE:
                      // Verifica se o modelo quer chamar uma função
                      for (const toolCall of toolCalls) {
                             const functionName = toolCall.function.name;
-                            const functionToCall = availableFunctions[functionName];
+                            const functionToCall = this.availableFunctions[functionName];
                             const functionArgs = JSON.parse(toolCall.function.arguments);
 
                             const functionResponse = await functionToCall?.(functionArgs);
@@ -113,40 +119,48 @@ CHAME FUNÇÕES SOMENTE:
                                           tool_call_id: toolCall.id,
                                    });
                             }
+
                             // Faça a solicitação final com os resultados da chamada da ferramenta.
                             const secondResponse = await groq.chat.completions.create({
                                    model: this.model,
                                    messages: this.messages,
                                    tools: this.tools,
                                    tool_choice: "auto",
-                                   temperature: 0.5,
+                                   temperature: 0.3,
                                    max_completion_tokens: 4096
                             });
-
-                            return secondResponse.choices[0].message.content;
-
+                            let text = secondResponse.choices[0].message.content
+                            // Remove as tags de function e o conteúdo entre elas
+                            text = text.replace(/<function=.*?>.*?<\/function>/gs, '');
+                            return text.trim();
                      }
                      return responseMessage.content;
               } catch (error) {
                      // log("An error occurred:", error);
-                     throw error; 
+                     throw error;
               }
-              // funções disponíveis para o modelo
 
-              function save(params) {
-                     pipefyConnector(params)
-              }
-              function scheduleMeet(params) {
-                     // log("📅 Agendando reunião...");
-                     // Simulando agendamento
+       }
+       // funções disponíveis para o modelo
+       async save(params) {
+              await this.pipefyConnector(params)
+       }
+       scheduleMeet(params) {
+              // log("📅 Agendando reunião...");
+              // Simulando agendamento
 
-                     // log("✅ Reunião agendada:", params);
-                     return "reunião agendada com sucesso";
-              }
+              // log("✅ Reunião agendada:", params);
+              return "reunião agendada com sucesso";
        }
        // conecta com a api do  Pipefy
-       pipefyConnector(params){
-              this.provider.updateCard(params)
+       /**
+        * Connects to Pipefy API and updates a card with the given parameters
+        * @async
+        * @param {Object} params - Parameters required for updating the card in Pipefy
+        * @returns {Promise<void>}
+        * @throws {Error} If there's an error updating the card
+        */
+       async pipefyConnector(params) {
+              await this.provider.updateCard(params)
        }
-       
 } export default ChatAgent;

@@ -9,7 +9,7 @@ class Pipefy_provider {
               this.INTERESSE_FIELD = "interesse";
        }
        // cria ou atualiza um card
-       updateCard(params) {
+       async updateCard(params) {
               const mutation =`
                      mutation {
                             createCard(input: {
